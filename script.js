@@ -5,9 +5,14 @@ window.addEventListener('load', function () {
   canvas.height = 720;
   let enemies = [];
   let score = 0;
+  let gameOver = false;
+  const fullscreenbtn = document.getElementById('fullscreenbtn');
+
   class InputHandler {
     constructor() {
       this.keys = [];
+      this.touchY = '';
+      this.touchThreshold = 30;
       window.addEventListener('keydown', (e) => {
         if ((e.key === "ArrowDown" ||
           e.key === "ArrowUp" ||
@@ -15,16 +20,35 @@ window.addEventListener('load', function () {
           e.key === "ArrowRight") &&
           this.keys.indexOf(e.key) === -1) {
           this.keys.push(e.key);
+        } else if (e.key === "Enter" && gameOver) {
+          restartGame()
         }
       });
       window.addEventListener('keyup', e => {
-        if (    e.key === "ArrowDown" ||
-                e.key === "ArrowUp" ||
-                e.key === "ArrowLeft" ||
-                e.key === "ArrowRight") {
+        if (e.key === "ArrowDown" ||
+          e.key === "ArrowUp" ||
+          e.key === "ArrowLeft" ||
+          e.key === "ArrowRight") {
           this.keys.splice(this.keys.indexOf(e.key), 1);
         }
-      })
+      });
+      window.addEventListener('touchstart', e => {
+        console.log('start');
+        this.touchY = e.changedTouches[0].pageY;
+      });
+      window.addEventListener('touchmove', e => {
+        const swipeDist = e.changedTouches[0].pageY - this.touchY;
+        if (swipeDist < -this.touchThreshold && this.keys.indexOf('swipe up') === -1) this.keys.push('swipe up');
+        else if (swipeDist > this.touchThreshold && this.keys.indexOf('swipe down') === -1) {
+          this.keys.push('swipe down');
+          if(gameOver) restartGame()
+        }
+      });
+      window.addEventListener('touchend', e => {
+        console.log(this.keys);
+        this.keys.splice(this.keys.indexOf('swipe up'), 1)
+        this.keys.splice(this.keys.indexOf('swipe down'), 1)
+      });
     }
   }
 
@@ -47,11 +71,27 @@ window.addEventListener('load', function () {
       this.vy = 0;
       this.weight = 1;
     }
+    restart() {
+      this.x = 100;
+      this.y = this.gameHeight - this.height;
+      this.maxFrame = 8;
+      this.frameY = 0;
+    }
     draw(context) {
-      context.fillStyle = 'white';
       context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height)
     }
-    update(input, dt) {
+    update(input, dt, enemies) {
+      //collision detection
+      enemies.forEach(enemy => {
+        const dx = (enemy.x + enemy.width/2)- (this.x + this.width/2);
+        const dy = (enemy.y + enemy.height/2)- (this.y + this.height/2);
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < enemy.width / 2 + this.width / 2) {
+          gameOver = true;
+        }
+      })
+
+      //sprite animations
       if (this.frameTimer > this.frameInterval) {
         if (this.frameX >= this.maxFrame) this.frameX = 0;
         else this.frameX++;
@@ -63,7 +103,7 @@ window.addEventListener('load', function () {
         this.speed = 5;
       } else if (input.keys.indexOf("ArrowLeft") > -1) {
         this.speed = -5;
-      } else if (input.keys.indexOf("ArrowUp") > -1 && this.onGround()) {
+      } else if ((input.keys.indexOf("ArrowUp") > -1 || input.keys.indexOf('swipe up') > -1) && this.onGround()) {
         this.vy -= 32
       } else {
         this.speed = 0;
@@ -110,6 +150,9 @@ window.addEventListener('load', function () {
       this.x -= this.speed;
       if (this.x < 0 - this.width) this.x = 0;
     }
+    restart() {
+      this.x = 0;
+    }
   }
 
   class Enemy {
@@ -152,7 +195,6 @@ window.addEventListener('load', function () {
   function handleEnemies(dt) {
     if (enemyTimer > enemyInterval + randomEnemyInterval) {
       enemies.push(new Enemy(canvas.width, canvas.height));
-      console.log(enemies);
       randomEnemyInterval = Math.random() * 1000 + 500;
       enemyTimer = 0;
     } else {
@@ -166,12 +208,41 @@ window.addEventListener('load', function () {
   }
 
   function displayStatusText(context) {
+    context.textAlign = 'left';
     context.font = '40px Helvetica';
     context.fillStyle = 'black';
     context.fillText('Score: ' + score, 20, 50);
     context.fillStyle = 'white';
     context.fillText('Score: ' + score, 23, 53);
+    if (gameOver) {
+      context.textAlign = 'center';
+      context.fillStyle = 'black';
+      context.fillText('GAME OVER, ENTER or swipe down to restart', canvas.width / 2, 200)
+      context.fillStyle = 'white';
+      context.fillText('GAME OVER, ENTER or swipe down to restart!', canvas.width / 2 + 3, 200 + 3)
+    }
   }
+
+  function restartGame() {
+    player.restart();
+    background.restart();
+    enemies = [];
+    score = 0;
+    gameOver = false;
+    animate(0);
+  }
+
+  function toggleFullScreen() {
+    if (!document.fullscreenbtn) {
+      canvas.requestFullscreen().then().catch(err => {
+         alert(`Error, cannot enable full-screen mode: ${err.message}`)
+      })
+    } else {
+      document.exitFullscreen();
+    }
+  }
+  fullscreenbtn.addEventListener('click', toggleFullScreen);
+  
 
   const input = new InputHandler();
   const player = new Player(canvas.width, canvas.height);
@@ -190,10 +261,11 @@ window.addEventListener('load', function () {
     background.draw(ctx);
     background.update();
     player.draw(ctx);
-    player.update(input, dt);
+    player.update(input, dt, enemies);
     handleEnemies(dt)
     displayStatusText(ctx);
-    requestAnimationFrame(animate);
+    if (!gameOver) requestAnimationFrame(animate);
+
   }
 
 
