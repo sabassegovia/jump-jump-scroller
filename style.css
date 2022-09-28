@@ -21,7 +21,7 @@ body {
   display: none;
 }
 
-#fullscreenbtn {
+#fullScreenButton {
   position: absolute;
   font-size: 20px;
   padding: 10px;
