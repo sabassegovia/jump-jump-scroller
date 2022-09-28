@@ -1,4 +1,10 @@
 window.addEventListener('load', function () {
+  //determine if mobile:
+  if (navigator.userAgentData.mobile) {
+    document.getElementById('fullScreenButton').style.visibility = "hidden";
+  } else {
+    document.getElementById('fullScreenButton').style.visibility = "visible";
+  }
   const canvas = document.getElementById('canvas1');
   const ctx = canvas.getContext('2d');
   canvas.width = 800;
