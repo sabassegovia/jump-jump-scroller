@@ -36,7 +36,6 @@ window.addEventListener('load', function () {
 
 
       window.addEventListener('touchstart', e => {
-        console.log('start');
         this.touchY = e.changedTouches[0].pageY;
       });
       window.addEventListener('touchmove', e => {
@@ -50,7 +49,6 @@ window.addEventListener('load', function () {
         }
       });
       window.addEventListener('touchend', e => {
-        console.log(this.keys);
         this.keys.splice(this.keys.indexOf('swipe up'), 1);
         this.keys.splice(this.keys.indexOf('swipe down'), 1);
       });
