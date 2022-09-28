@@ -209,17 +209,24 @@ window.addEventListener('load', function () {
 
   function displayStatusText(context) {
     context.textAlign = 'left';
-    context.font = '40px Helvetica';
+    context.font = '30px Helvetica';
     context.fillStyle = 'black';
     context.fillText('Score: ' + score, 20, 50);
     context.fillStyle = 'white';
     context.fillText('Score: ' + score, 23, 53);
     if (gameOver) {
       context.textAlign = 'center';
+
       context.fillStyle = 'black';
-      context.fillText('GAME OVER, ENTER or swipe down to restart', canvas.width / 2, 200)
+      context.fillText('GAME OVER', canvas.width / 2, 150)
+      context.fillText('ENTER or SWIPE DOWN to RESTART', canvas.width / 2, 200)
+      context.fillText('HIGH SCORE: ' + score, canvas.width / 2, 250)
+
+
       context.fillStyle = 'white';
-      context.fillText('GAME OVER, ENTER or swipe down to restart!', canvas.width / 2 + 3, 200 + 3)
+      context.fillText('GAME OVER', canvas.width / 2 + 3, 150 + 3)
+      context.fillText('ENTER or SWIPE DOWN to RESTART', canvas.width / 2 + 3, 200 + 3)
+      context.fillText('HIGH SCORE: ' + score, canvas.width / 2 + 3, 250 + 3)
     }
   }
 
@@ -242,7 +249,7 @@ window.addEventListener('load', function () {
     }
   }
   fullscreenbtn.addEventListener('click', toggleFullScreen);
-  
+
 
   const input = new InputHandler();
   const player = new Player(canvas.width, canvas.height);
