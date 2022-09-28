@@ -33,6 +33,8 @@ window.addEventListener('load', function () {
 
         }
       });
+
+
       window.addEventListener('touchstart', e => {
         console.log('start');
         this.touchY = e.changedTouches[0].pageY;
@@ -41,11 +43,9 @@ window.addEventListener('load', function () {
         const swipeDist = e.changedTouches[0].pageY - this.touchY;
         if (swipeDist < -this.touchThreshold && this.keys.indexOf('swipe up') === -1) {
           this.keys.push('swipe up');
-          e.preventDefault();
         }
         else if (swipeDist > this.touchThreshold && this.keys.indexOf('swipe down') === -1) {
           this.keys.push('swipe down');
-          e.preventDefault();
           if(gameOver) restartGame()
         }
       });
@@ -53,7 +53,6 @@ window.addEventListener('load', function () {
         console.log(this.keys);
         this.keys.splice(this.keys.indexOf('swipe up'), 1);
         this.keys.splice(this.keys.indexOf('swipe down'), 1);
-        e.stopPropagation();
       });
     }
   }
@@ -237,14 +236,14 @@ window.addEventListener('load', function () {
       context.fillStyle = 'black';
       context.fillText('GAME OVER', canvas.width / 2, 80)
       context.fillText('ENTER or SWIPE DOWN to RESTART', canvas.width / 2, 120)
-      context.fillText('bSESSION HIGH: ' + sessionHigh, canvas.width / 2, 180)
+      context.fillText('SESSION HIGH: ' + sessionHigh, canvas.width / 2, 180)
       context.fillText('ALL-TIME HIGH: ' + allTimeHighScore, canvas.width / 2, 220)
 
 
       context.fillStyle = 'white';
       context.fillText('GAME OVER', canvas.width / 2 + 3, 80 + 3)
       context.fillText('ENTER or SWIPE DOWN to RESTART', canvas.width / 2 + 3, 120 + 3)
-      context.fillText('bSESSION HIGH: ' + sessionHigh, canvas.width / 2 + 3, 180 + 3)
+      context.fillText('SESSION HIGH: ' + sessionHigh, canvas.width / 2 + 3, 180 + 3)
       context.fillText('ALL-TIME HIGH: ' + allTimeHighScore, canvas.width / 2 + 3, 220 + 3)
 
     }
