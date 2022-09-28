@@ -260,7 +260,7 @@ window.addEventListener('load', function () {
 
   function toggleFullScreen() {
     if (!document.fullscreenElement) {
-      canvas.requestFullscreen()..catch(err => {
+      canvas.requestFullscreen().catch(err => {
         alert(`Error, cannot enable full-screen mode: ${err.message}`)
       })
     } else {
