@@ -215,24 +215,31 @@ window.addEventListener('load', function () {
     context.fillStyle = 'white';
     context.fillText('Score: ' + score, 23, 53);
     if (gameOver) {
-      let highScore = sessionStorage.getItem('highScore') || 0;
-      if (score > highScore) {
-        sessionStorage.setItem('highScore', score.toString());
-        highScore = Number(score);
+      let sessionHigh = sessionStorage.getItem('sessionHigh') || 0;
+      if (score > sessionHigh) {
+        sessionStorage.setItem('sessionHigh', score.toString());
+        sessionHigh = Number(score);
       }
-      console.log(highScore);
-      context.textAlign = 'center';
+      let allTimeHighScore = localStorage.getItem('allTimeHighScore') || 0;
+      if (score > allTimeHighScore) {
+        localStorage.setItem('allTimeHighScore', score.toString());
+        allTimeHighScore = Number(score);
+      }
 
+
+      context.textAlign = 'center';
       context.fillStyle = 'black';
-      context.fillText('GAME OVER', canvas.width / 2, 150)
-      context.fillText('ENTER or SWIPE DOWN to RESTART', canvas.width / 2, 200)
-      context.fillText('HIGH SCORE: ' + highScore, canvas.width / 2, 250)
+      context.fillText('GAME OVER', canvas.width / 2, 80)
+      context.fillText('ENTER or SWIPE DOWN to RESTART', canvas.width / 2, 120)
+      context.fillText('SESSION HIGH: ' + sessionHigh, canvas.width / 2, 180)
+      context.fillText('ALL-TIME HIGH: ' + allTimeHighScore, canvas.width / 2, 220)
 
 
       context.fillStyle = 'white';
-      context.fillText('GAME OVER', canvas.width / 2 + 3, 150 + 3)
-      context.fillText('ENTER or SWIPE DOWN to RESTART', canvas.width / 2 + 3, 200 + 3)
-      context.fillText('HIGH SCORE: ' + highScore, canvas.width / 2 + 3, 250 + 3)
+      context.fillText('GAME OVER', canvas.width / 2 + 3, 80 + 3)
+      context.fillText('ENTER or SWIPE DOWN to RESTART', canvas.width / 2 + 3, 120 + 3)
+      context.fillText('SESSION HIGH: ' + sessionHigh, canvas.width / 2 + 3, 180 + 3)
+      context.fillText('ALL-TIME HIGH: ' + allTimeHighScore, canvas.width / 2 + 3, 220 + 3)
 
     }
   }
