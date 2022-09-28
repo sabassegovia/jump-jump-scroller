@@ -215,18 +215,25 @@ window.addEventListener('load', function () {
     context.fillStyle = 'white';
     context.fillText('Score: ' + score, 23, 53);
     if (gameOver) {
+      let highScore = sessionStorage.getItem('highScore') || 0;
+      if (score > highScore) {
+        sessionStorage.setItem('highScore', score.toString());
+        highScore = Number(score);
+      }
+      console.log(highScore);
       context.textAlign = 'center';
 
       context.fillStyle = 'black';
       context.fillText('GAME OVER', canvas.width / 2, 150)
       context.fillText('ENTER or SWIPE DOWN to RESTART', canvas.width / 2, 200)
-      context.fillText('HIGH SCORE: ' + score, canvas.width / 2, 250)
+      context.fillText('HIGH SCORE: ' + highScore, canvas.width / 2, 250)
 
 
       context.fillStyle = 'white';
       context.fillText('GAME OVER', canvas.width / 2 + 3, 150 + 3)
       context.fillText('ENTER or SWIPE DOWN to RESTART', canvas.width / 2 + 3, 200 + 3)
-      context.fillText('HIGH SCORE: ' + score, canvas.width / 2 + 3, 250 + 3)
+      context.fillText('HIGH SCORE: ' + highScore, canvas.width / 2 + 3, 250 + 3)
+
     }
   }
 
