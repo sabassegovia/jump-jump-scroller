@@ -30,6 +30,7 @@ window.addEventListener('load', function () {
           e.key === "ArrowLeft" ||
           e.key === "ArrowRight") {
           this.keys.splice(this.keys.indexOf(e.key), 1);
+
         }
       });
       window.addEventListener('touchstart', e => {
@@ -38,16 +39,21 @@ window.addEventListener('load', function () {
       });
       window.addEventListener('touchmove', e => {
         const swipeDist = e.changedTouches[0].pageY - this.touchY;
-        if (swipeDist < -this.touchThreshold && this.keys.indexOf('swipe up') === -1) this.keys.push('swipe up');
+        if (swipeDist < -this.touchThreshold && this.keys.indexOf('swipe up') === -1) {
+          this.keys.push('swipe up');
+          e.stopPropagation();
+        }
         else if (swipeDist > this.touchThreshold && this.keys.indexOf('swipe down') === -1) {
           this.keys.push('swipe down');
+          e.stopPropagation();
           if(gameOver) restartGame()
         }
       });
       window.addEventListener('touchend', e => {
         console.log(this.keys);
-        this.keys.splice(this.keys.indexOf('swipe up'), 1)
-        this.keys.splice(this.keys.indexOf('swipe down'), 1)
+        this.keys.splice(this.keys.indexOf('swipe up'), 1);
+        this.keys.splice(this.keys.indexOf('swipe down'), 1);
+        e.stopPropagation();
       });
     }
   }
@@ -288,7 +294,5 @@ window.addEventListener('load', function () {
     if (!gameOver) requestAnimationFrame(animate);
 
   }
-
-
   animate(0);
 });
